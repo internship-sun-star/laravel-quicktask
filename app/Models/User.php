@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -41,6 +42,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected function fullname(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attrs) => join(' ', [$attrs['first_name'], $attrs['last_name']])
+        )->shouldCache();
+    }
+
+    protected function username(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Str::slug($value)
+        );
+    }
 
     public function products(): HasMany
     {
