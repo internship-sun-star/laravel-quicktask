@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::resource('users', UserController::class);
+
+Route::prefix('products')->controller(ProductController::class)->name('products.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::get('/create', 'create')->name('create');
+    Route::get('/{product}', 'show')->name('show');
+    Route::match(['PUT', 'PATCH'], '/{product}', 'update')->name('update');
+    Route::delete('/{product}', 'destroy')->name('destroy');
+    Route::get('/{product}/edit', 'edit')->name('edit');
 });
