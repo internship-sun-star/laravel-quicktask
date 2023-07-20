@@ -19,7 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->middleware([
+    'auth',
+    'admin',
+]);
 
 Route::prefix('products')->controller(ProductController::class)->name('products.')->group(function () {
     Route::get('/', 'index')->name('index');
