@@ -1,0 +1,20 @@
+{
+  "name": "laravel-quicktask",
+  "description": "",
+  "main": "",
+  "authors": [
+    "XanhZ <Zincat0107@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/internship-sun-star/laravel-quicktask",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "laravel-ui": "https://github.com/internship-sun-star/laravel-ui.git#main"
+  }
+}
