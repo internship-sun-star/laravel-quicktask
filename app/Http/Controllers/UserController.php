@@ -7,12 +7,23 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    const DEFAULT_PAGE = 1;
+    const DEFAULT_LIMIT = 10;
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $page = $request->query('page', UserController::DEFAULT_PAGE);
+        $limit = $request->query('limit', UserController::DEFAULT_LIMIT);
+
+        $skip = ($page - 1) * $limit;
+        $users = User::where([])->orderBy('id', 'desc')->skip($skip)->take($limit)->get();
+
+        return view('users', [
+            'users' => $users,
+        ]);
     }
 
     /**

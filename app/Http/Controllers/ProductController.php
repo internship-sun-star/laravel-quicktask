@@ -3,16 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    const DEFAULT_PAGE = 1;
+    const DEFAULT_LIMIT = 10;
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, User $user)
     {
+        $page = $request->query('page', ProductController::DEFAULT_PAGE);
+        $limit = $request->query('limit', ProductController::DEFAULT_LIMIT);
 
+        $products = $user->products;
+
+        return view('products', [
+            'products' => $products,
+        ]);
     }
 
     /**

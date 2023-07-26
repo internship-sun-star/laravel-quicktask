@@ -1,5 +1,7 @@
-**.json
-
-bower_components
+# Laravel mix
+mix-manifest.json
 css
 js
+fonts
+assets
+images
