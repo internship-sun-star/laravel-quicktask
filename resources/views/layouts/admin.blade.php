@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
     <!-- Simple bar CSS -->
     <link rel="stylesheet" href="{{ URL::asset('css/simplebar.css') }}">
     <!-- Fonts CSS -->
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ URL::asset('css/daterangepicker.css') }}">
     <!-- App CSS -->
     <link rel="stylesheet" href="{{ URL::asset('css/app-light.css') }}" id="lightTheme">
-    <link rel="stylesheet" href="{{ URL::asset('css/app-dark.css') }}" id="darkTheme" disabled>
+    @vite(['resources/js/app.js'])
 </head>
 
 <body class="vertical light">
@@ -34,7 +34,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="avatar avatar-sm mt-2">
-                            <img src="{{ URL::asset('assets/avatars/face-1.jpg') }}" alt="..." class="avatar-img rounded-circle">
+                            <img src="{{ URL::asset('images/face.jpg') }}" alt="..." class="avatar-img rounded-circle">
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
@@ -48,7 +48,6 @@
                 <i class="fe fe-x"><span class="sr-only"></span></i>
             </a>
             <nav class="vertnav navbar navbar-light">
-                <!-- nav bar -->
                 <p class="text-muted nav-heading mt-4 mb-1">
                     <span>{{ __('text.management') }}</span>
                 </p>
@@ -74,7 +73,6 @@
     <script src="{{ URL::asset('js/daterangepicker.js') }}"></script>
     <script src="{{ URL::asset('js/jquery.stickOnScroll.js') }}"></script>
     <script src="{{ URL::asset('js/tinycolor-min.js') }}"></script>
-    <script src="{{ URL::asset('js/config.js') }}"></script>
     <script src="{{ URL::asset('js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::asset('js/dataTables.bootstrap4.min.js') }}"></script>
     <script>
@@ -86,7 +84,6 @@
             ]
         });
     </script>
-    <script src="{{ URL::asset('js/apps.js') }}"></script>
 </body>
 
 </html>

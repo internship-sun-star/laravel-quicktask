@@ -33,23 +33,32 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/language/{lang}', [LanguageController::class, 'changePreferredLanguage'])->name('language');
 
-Route::resource('users', UserController::class)
+Route::prefix('users')
     ->middleware([
         'auth',
         'admin',
-    ]);
-
-Route::prefix('users')
-    ->controller(ProductController::class)
-    ->name('user-products.')
+    ])
     ->group(function () {
-        Route::get('/{user}/products', 'index')->name('index');
-        Route::post('/{user}/products', 'store')->name('store');
-        Route::get('/{user}/products/create', 'create')->name('create');
-        Route::get('/{user}/products/{product}', 'show')->name('show');
-        Route::match(['PUT', 'PATCH'], '/{user}/products/{product}', 'update')->name('update');
-        Route::delete('/{user}/products/{product}', 'destroy')->name('destroy');
-        Route::get('/{user}/products/{product}/edit', 'edit')->name('edit');
+        Route::name('users.')
+            ->controller(UserController::class)
+            ->group(function () {
+                Route::get('', 'index')->name('index');
+                Route::post('', 'store')->name('store');
+                Route::get('/{id}', 'find')->name('find')->where('id', '\d+');
+                Route::put('/{id}', 'update')->name('update')->where('id', '\d+');
+                Route::delete('/{id}', 'destroy')->name('destroy')->where('id', '\d+');
+            });
+
+        Route::name('user-products.')
+            ->controller(ProductController::class)
+            ->group(function () {
+                Route::get('/{user}/products', 'index')->name('index');
+                Route::post('/{user}/products', 'store')->name('store');
+                Route::get('/{user}/products/create', 'create')->name('create');
+                Route::get('/{user}/products/{id}', 'find')->name('find')->where('id', '\d+');
+                Route::put('/{user}/products/{id}', 'update')->name('update')->where('id', '\d+');
+                Route::delete('/{user}/products/{id}', 'destroy')->name('destroy')->where('id', '\d+');
+            });
     });
 
 require __DIR__ . '/auth.php';

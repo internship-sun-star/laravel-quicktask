@@ -7,4 +7,4 @@ mix.js("resources/js/app.js", "js")
   .copyDirectory(`${BASE_BOWER_PATH}/laravel-ui/js`, "public/js")
   .copyDirectory(`${BASE_BOWER_PATH}/laravel-ui/css`, "public/css")
   .copyDirectory(`${BASE_BOWER_PATH}/laravel-ui/fonts`, "public/fonts")
-  .copyDirectory(`${BASE_BOWER_PATH}/laravel-ui/assets`, "public/assets");
+  .copyDirectory(`${BASE_BOWER_PATH}/laravel-ui/images`, "public/images");

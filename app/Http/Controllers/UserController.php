@@ -2,75 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     const DEFAULT_PAGE = 1;
-    const DEFAULT_LIMIT = 10;
+    const DEFAULT_LIMIT = 2;
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $page = $request->query('page', UserController::DEFAULT_PAGE);
         $limit = $request->query('limit', UserController::DEFAULT_LIMIT);
 
         $skip = ($page - 1) * $limit;
-        $users = User::where([])->orderBy('id', 'desc')->skip($skip)->take($limit)->get();
+
+        // For task eager loading only
+        $users = User::with('products')->orderByDesc('id')->skip($skip)->take($limit)->get();
 
         return view('users', [
             'users' => $users,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function find(int $id) {
+        return DB::table('users')->find($id, [
+            'id',
+            'email',
+            'username',
+            'is_admin',
+            'is_active',
+            'first_name',
+            'last_name',
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        $vBody = $request->validated();
+        $vBody["password"] = Hash::make($vBody["password"]);
+
+        $id = DB::table('users')->insertGetId([
+            ...$vBody,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return $this->find($id);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
+    public function update(UpdateUserRequest $request, int $id)
     {
-        //
+        $vBody = $request->validated();
+        if (isset($vBody["password"])) {
+            $vBody["password"] = Hash::make($vBody["password"]);
+        }
+        $values = [
+            ...$vBody,
+            'updated_at' => now(),
+        ];
+
+        if (isset($request->password)) {
+            $values['password'] = $request->password;
+        }
+
+        DB::table('users')->where('id', '=', $id)->update($values);
+
+        return $this->find($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+    public function destroy(int $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
+        DB::table('users')->delete($id);
     }
 }
