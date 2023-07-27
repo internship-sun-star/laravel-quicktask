@@ -2,75 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     const DEFAULT_PAGE = 1;
     const DEFAULT_LIMIT = 10;
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request, User $user)
     {
         $page = $request->query('page', ProductController::DEFAULT_PAGE);
         $limit = $request->query('limit', ProductController::DEFAULT_LIMIT);
+        $skip = ($page - 1) * $limit;
 
-        $products = $user->products;
+        $products = $user->products()
+                        ->orderByDesc('id')
+                        ->skip($skip)
+                        ->take($limit)
+                        ->get();
 
         return view('products', [
             'products' => $products,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreProductRequest $request, User $user)
     {
-        //
+        $vBody = $request->validated();
+        $vBody["slug"] = Str::slug($vBody["name"]);
+
+        $product = $user->products()->create($vBody);
+
+        return $product;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function find(User $user, int $id)
     {
-        //
+        return $user->products()->find($id);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function update(UpdateProductRequest $request, User $user, int $id)
     {
-        //
+        $vBody = $request->validated();
+        if (isset($vBody["name"])) {
+            $vBody["slug"] = Str::slug($vBody["name"]);
+        }
+
+        $product = $this->find($user, $id)->update($vBody);
+
+        return $product;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
+    public function destroy(User $user, int $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        return $this->find($user, $id)->delete();
     }
 }
